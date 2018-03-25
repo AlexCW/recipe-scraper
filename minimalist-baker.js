@@ -6,7 +6,7 @@ let fs = require('fs');
 let entryPoint = 'https://minimalistbaker.com/recipe-index';
 
 var minimalistBaker = {
-
+	recipesCollection : [],
 	extractTitle ($) {
 		let title = $('.entry-title', '.entry-header').text();
 		return title;
@@ -53,6 +53,7 @@ var minimalistBaker = {
 		return Number(servings.replace(/\D/g,''));
 	},
 	async resolveRecipe (url) {
+
 		const timeout = ms => new Promise(res => setTimeout(res, ms));
 
 		// await timeout(5000);
@@ -80,36 +81,44 @@ var minimalistBaker = {
 
 			recipe.difficulty = 'easy';
 
-			fd = fs.openSync('data/minimalist-baker.json', 'a');
-  			fs.appendFileSync(fd, JSON.stringify(recipe, null, 2), 'utf8');
+			this.recipesCollection.push(recipe);
 
 		} catch (err) {
 			console.log(err)
 		}
 	},
-	selectCategory (html) {
+	async asyncForEach(array, callback) {
+	  for (let index = 0; index < array.length; index++) {
+	    await callback(array[index], index, array)
+	  }
+	},
+	async selectCategory (html) {
         const $ = cheerio.load(html); 
         var that = this;
-        $('.featured-recipes').each(function(i, elem) {
+
+        await that.asyncForEach($('.featured-recipes'), async (elem) => {
         	let recipes = $(elem).find('article');
-
         	let count = 0;
-
-        	recipes.each(function(i, elem) {
+        	await that.asyncForEach(recipes, async (elem) => {
         		if(count < 1) {
-        			let url = $(elem).find('a').attr('href');
-        			that.resolveRecipe(url);
-        		}
-        		count++;
-        	});
+				  	let url = $(elem).find('a').attr('href');
+		    		await that.resolveRecipe(url);
+		    	}
+	        	count++;
+			});
         });
 	},
 	init () {
+		var that = this;
 		axios.get(entryPoint)
 		    .then((response) => {
 		        if(response.status === 200) {
 		        	const html = response.data;
-			        this.selectCategory(html)
+			        this.selectCategory(html).then(function(){
+			        	 fs.writeFile('data/minimalist-baker.json', 
+					        JSON.stringify(that.recipesCollection, null, 4), (err)=>{
+					     })
+			        });
 		    	}
 		    }, (error) => console.log(err) );
 	}
