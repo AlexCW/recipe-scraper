@@ -22,8 +22,10 @@ var minimalistBaker = {
 		let ingredients = [];
 
 		$(ingredient_container).each(function(i, container) {
-			ingredients.push($(container).find('.ingredient').html());
-		})
+			$(container).find('.ingredient').each(function(i, ingredient) {
+				ingredients.push($(ingredient).html());
+			});
+		});
 
 		return ingredients;
 	},
@@ -103,6 +105,8 @@ var minimalistBaker = {
 			recipe.tags = this.extractTags(html);
 
 			recipe.servings = this.extractServings(html);
+
+			recipe.difficulty = 'easy';
 
 		} catch (err) {
 			console.log(err)
