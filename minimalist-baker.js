@@ -58,6 +58,17 @@ var minimalistBaker = {
 
 		return totalTime - prepTime;
 	},
+	extractTags (html) {
+		const $ = html;
+
+		let tagsContainer = $('.divERSHeadItems');
+
+		let typeTags = tagsContainer.find('.ERSCategory').find(`[itemprop='recipeCategory']`).text();
+
+		let cuisineTags = tagsContainer.find('.ERSCuisine').find(`[itemprop='recipeCuisine']`).text();
+
+		return Array.prototype.concat(typeTags.split(","), cuisineTags.split(","));
+	},
 	async resolveRecipe (url) {
 		const timeout = ms => new Promise(res => setTimeout(res, ms));
 
@@ -79,6 +90,8 @@ var minimalistBaker = {
 			recipe.prepTime = this.extractPrepTime(html);
 
 			recipe.cookingTime = this.extractCookingTime(recipe.prepTime, html);
+
+			recipe.tags = this.extractTags(html);
 
 		} catch (err) {
 			console.log(err)
