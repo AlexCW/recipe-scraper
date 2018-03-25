@@ -39,7 +39,7 @@ var minimalistBaker = {
 				url: url
 			};
 
-			recipe.title = this.extractTitle(response.data);
+			recipe.title = this.extractTitle(html);
 
 			recipe.ingredients = this.extractIngredients(html);
 
