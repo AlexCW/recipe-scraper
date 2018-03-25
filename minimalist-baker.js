@@ -6,7 +6,7 @@ let entryPoint = 'https://minimalistbaker.com/recipe-index';
 var minimalistBaker = {
 
 	extractTitle (html) {
-		const $ = cheerio.load(html); 
+		const $ = html;
 
 		let title = $('.entry-title', '.entry-header').text();
 
