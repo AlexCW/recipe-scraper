@@ -69,6 +69,15 @@ var minimalistBaker = {
 
 		return Array.prototype.concat(typeTags.split(","), cuisineTags.split(","));
 	},
+	extractServings (html) {
+		const $ = html;
+
+		let tagsContainer = $('.divERSHeadItems');
+
+		let servings = tagsContainer.find('.ERSServes').find(`[itemprop='recipeYield']`).text();
+
+		return Number(servings.replace(/\D/g,''));
+	},
 	async resolveRecipe (url) {
 		const timeout = ms => new Promise(res => setTimeout(res, ms));
 
@@ -92,6 +101,8 @@ var minimalistBaker = {
 			recipe.cookingTime = this.extractCookingTime(recipe.prepTime, html);
 
 			recipe.tags = this.extractTags(html);
+
+			recipe.servings = this.extractServings(html);
 
 		} catch (err) {
 			console.log(err)
