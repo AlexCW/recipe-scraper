@@ -5,6 +5,13 @@ let entryPoint = 'https://minimalistbaker.com/recipe-index';
 
 var minimalistBaker = {
 
+	extractTitle (html) {
+		const $ = cheerio.load(html); 
+
+		let title = $('.entry-title', '.entry-header').text();
+
+		return title;
+	},
 	extractIngredients (html) {
 		const $ = html;
 
@@ -31,6 +38,8 @@ var minimalistBaker = {
 			var recipe = {
 				url: url
 			};
+
+			recipe.title = this.extractTitle(response.data);
 
 			recipe.ingredients = this.extractIngredients(html);
 
