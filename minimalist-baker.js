@@ -423,7 +423,7 @@ var minimalistBaker = {
 		let tagsContainer = $('.divERSHeadItems');
 		let typeTags = tagsContainer.find('.ERSCategory').find(`[itemprop='recipeCategory']`).text();
 		let cuisineTags = tagsContainer.find('.ERSCuisine').find(`[itemprop='recipeCuisine']`).text();
-		return Array.prototype.concat(typeTags.split(","), cuisineTags.split(","));
+		return Array.prototype.concat(typeTags.split(", "), cuisineTags.split(", "));
 	},
 	extractServings ($) {
 		let tagsContainer = $('.divERSHeadItems');
