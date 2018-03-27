@@ -394,7 +394,11 @@ var minimalistBaker = {
 						recipe_ingredient = ingredient.toLowerCase();
 					}
 				});
-				ingredients.push(recipe_ingredient);
+
+				ingredients.push({
+					ingredient: recipe_ingredient,
+					priority: i
+				});
 			});
 		});
 		return ingredients;
