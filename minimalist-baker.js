@@ -375,7 +375,25 @@ var ingredient_collection = ['Garlic',
 'Grapefruit',
 'Granola',
 'Strawberry',
-'Burrata'];
+'Burrata',
+'Cornstarch',
+'Almond Flour',
+'Gluten Free Flour'];
+
+var measurements = [
+	'g',
+	'oz',
+	'ml',
+	'tbsp',
+	'tsp',
+	'pound',
+	'cup',
+	'pint',
+	'dash',
+	'pinch',
+	'total',
+	'handful'
+];
 
 var minimalistBaker = {
 	recipesCollection : [],
@@ -388,16 +406,26 @@ var minimalistBaker = {
 		let ingredients = [];
 		$(ingredient_container).each(function(i, container) {
 			$(container).find('.ingredient').each(function(i, ingredient) {
-				var recipe_ingredient = $(ingredient).html().toLowerCase();
+				var recipe_ingredient = $(ingredient).html().replace(/\-/g, " ").toLowerCase();
 				ingredient_collection.forEach(function(ingredient) {
 					if(recipe_ingredient.indexOf(ingredient.toLowerCase()) > -1) {
 						recipe_ingredient = ingredient.toLowerCase();
 					}
 				});
 
+				var ingredientMeasurement = '';
+
+				measurements.forEach(function(measurement) {
+					if(recipe_ingredient.indexOf(measurement) > -1) {
+						ingredientMeasurement = measurement;
+						return;
+					}
+				});
+
 				ingredients.push({
 					ingredient: recipe_ingredient,
-					priority: i
+					priority: i,
+					measurement: ingredientMeasurement
 				});
 			});
 		});
