@@ -378,21 +378,34 @@ var ingredient_collection = ['Garlic',
 'Burrata',
 'Cornstarch',
 'Almond Flour',
-'Gluten Free Flour'];
+'Gluten Free Flour',
+'Pomegranate Molasses',
+'Bourbon Whiskey',
+'Bitters',
+'Tapioca Starch',
+'Medjool Dates',
+'Zucchini',
+'Curry Powder',
+'Kimchi',
+'Coconut Cream',
+'Coconut Yoghurt',
+'Habanero Peppers'];
 
 var measurements = [
-	'g',
+	/\d+(\s?)g/,
 	'oz',
-	'ml',
-	'tbsp',
-	'tsp',
+	/\d+(\s?)ml(s?)/gi,
+	/\d+(\s?)tbsp(s?)/gi,
+	/\d+(\s?)tsp(s?)/gi,
 	'pound',
-	'cup',
+	/\d+(\s?)cup(s?)/gi,
 	'pint',
 	'dash',
 	'pinch',
 	'total',
-	'handful'
+	'handful',
+	'clove',
+	'batch'
 ];
 
 var minimalistBaker = {
@@ -407,24 +420,39 @@ var minimalistBaker = {
 		$(ingredient_container).each(function(i, container) {
 			$(container).find('.ingredient').each(function(i, ingredient) {
 				var recipe_ingredient = $(ingredient).html().replace(/\-/g, " ").toLowerCase();
+
+				let ingredientMeasurement = '';
+
+				let ingredientAmount = 0;
+
+				measurements.forEach(function(measurement) {
+					let match = recipe_ingredient.match(measurement);
+					if(match) {
+						ingredientMeasurement = "'" + measurement + "'";
+						if(ingredientMeasurement === 'pinch') {
+							ingredientAmount = 1;
+							return;
+						}
+						ingredientAmount = match.join("").match(/\d+/);
+
+						if(ingredientAmount) {
+							ingredientAmount = ingredientAmount[0];
+						}
+
+						return;
+					}
+				});
+
 				ingredient_collection.forEach(function(ingredient) {
 					if(recipe_ingredient.indexOf(ingredient.toLowerCase()) > -1) {
 						recipe_ingredient = ingredient.toLowerCase();
 					}
 				});
 
-				var ingredientMeasurement = '';
-
-				measurements.forEach(function(measurement) {
-					if(recipe_ingredient.indexOf(measurement) > -1) {
-						ingredientMeasurement = measurement;
-						return;
-					}
-				});
-
 				ingredients.push({
 					ingredient: recipe_ingredient,
 					priority: i,
+					amount: ingredientAmount,
 					measurement: ingredientMeasurement
 				});
 			});
