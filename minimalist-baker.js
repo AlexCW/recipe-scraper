@@ -392,20 +392,20 @@ var ingredient_collection = ['Garlic',
 'Habanero Peppers'];
 
 var measurements = [
-	/\d+(\s?)g/,
-	'oz',
-	/\d+(\s?)ml(s?)/gi,
-	/\d+(\s?)tbsp(s?)/gi,
-	/\d+(\s?)tsp(s?)/gi,
-	'pound',
-	/\d+(\s?)cup(s?)/gi,
-	'pint',
-	'dash',
-	'pinch',
-	'total',
-	'handful',
-	'clove',
-	'batch'
+	{ pattern: /\d+(\s?)g/, name: 'g' },
+	{ pattern: 'oz', name: 'oz'},
+	{ pattern: /\d+(\s?)ml(s?)/gi, name: 'ml'},
+	{ pattern: /\d+(\s?)tbsp(s?)/gi, name: 'tbsp'},
+	{ pattern: /\d+(\s?)tsp(s?)/gi, name: 'tsp'},
+	{ pattern: 'pound', name: 'pound'},
+	{ pattern: /\d+(\s?)cup(s?)/, name: 'cups'},
+	{ pattern: 'pint', name: 'pint'},
+	{ pattern: 'dash', name: 'dash'},
+	{ pattern: 'pinch', name: 'pinch'},
+	{ pattern: 'total', name: 'total'},
+	{ pattern: 'handful', name: 'handful'},
+	{ pattern: 'clove', name: 'clove'},
+	{ pattern: 'batch', name: 'batch'}
 ];
 
 var minimalistBaker = {
@@ -421,22 +421,19 @@ var minimalistBaker = {
 			$(container).find('.ingredient').each(function(i, ingredient) {
 				var recipe_ingredient = $(ingredient).html().replace(/\-/g, " ").toLowerCase();
 
-				let ingredientMeasurement = '';
+				let ingredientMeasurement = 'total';
 
-				let ingredientAmount = 0;
+				let ingredientAmount = 1;
 
 				measurements.forEach(function(measurement) {
-					let match = recipe_ingredient.match(measurement);
+					let match = recipe_ingredient.match(measurement.pattern);
 					if(match) {
-						ingredientMeasurement = "'" + measurement + "'";
-						if(ingredientMeasurement === 'pinch') {
-							ingredientAmount = 1;
-							return;
-						}
-						ingredientAmount = match.join("").match(/\d+/);
+						ingredientMeasurement = measurement.name;
+						
+						matchedIngredient = match.join("").match(/\d+/);
 
-						if(ingredientAmount) {
-							ingredientAmount = ingredientAmount[0];
+						if(matchedIngredient) {
+							ingredientAmount = matchedIngredient[0];
 						}
 
 						return;
