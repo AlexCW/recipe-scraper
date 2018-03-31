@@ -392,20 +392,20 @@ var ingredient_collection = ['Garlic',
 'Habanero Peppers'];
 
 var measurements = [
-	{ pattern: /\d+(\s?)g/, name: 'g' },
-	{ pattern: 'oz', name: 'oz'},
-	{ pattern: /\d+(\s?)ml(s?)/gi, name: 'ml'},
-	{ pattern: /\d+(\s?)tbsp(s?)/gi, name: 'tbsp'},
-	{ pattern: /\d+(\s?)tsp(s?)/gi, name: 'tsp'},
-	{ pattern: 'pound', name: 'pound'},
-	{ pattern: /\d+(\s?)cup(s?)/, name: 'cups'},
 	{ pattern: 'pint', name: 'pint'},
+	{ pattern: 'handful', name: 'handful'},
+	{ pattern: 'batch', name: 'batch'},
+	{ pattern: 'pound', name: 'pound'},
+	{ pattern: 'oz', name: 'oz'},
+	{ pattern: /\d+(\s?)cup(s?)/, name: 'cups'},
 	{ pattern: 'dash', name: 'dash'},
 	{ pattern: 'pinch', name: 'pinch'},
-	{ pattern: 'total', name: 'total'},
-	{ pattern: 'handful', name: 'handful'},
+	{ pattern: /\d+(\s?)tsp(s?)/gi, name: 'tsp'},
+	{ pattern: /\d+(\s?)tbsp(s?)/gi, name: 'tbsp'},
+	{ pattern: /\d+(\s?)ml(s?)/gi, name: 'ml'},
+	{ pattern: /\d+(\s?)g/, name: 'g' },
 	{ pattern: 'clove', name: 'clove'},
-	{ pattern: 'batch', name: 'batch'}
+	{ pattern: 'total', name: 'total'}
 ];
 
 var minimalistBaker = {
