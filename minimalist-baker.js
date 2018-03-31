@@ -6,7 +6,6 @@ let fs = require('fs');
 let entryPoint = 'https://minimalistbaker.com/recipe-index';
 
 const ingredientsCollection = require('./data/ingredients');
-
 const measurements = require('./data/measurements');
 
 var minimalistBaker = {
@@ -57,6 +56,10 @@ var minimalistBaker = {
 		});
 		return ingredients;
 	},
+	extractImage($) {
+		let ingredient_image = $('.entry-content').find('img');
+		return ingredient_image.attr('src');
+	},
 	extractMinutesFromText(text) {
 		let mappedTime = text.split(" ").map(function(e, a) {
 			if(a == 0 || a % 2 == 0) {
@@ -104,6 +107,8 @@ var minimalistBaker = {
 			};
 
 			recipe.title = this.extractTitle(html);
+
+			recipe.image = this.extractImage(html);
 
 			recipe.ingredients = this.extractIngredients(html);
 			
