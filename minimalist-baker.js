@@ -42,16 +42,23 @@ var minimalistBaker = {
 
 				ingredientsCollection.forEach(function(ingredient) {
 					if(recipe_ingredient.indexOf(ingredient.toLowerCase()) > -1) {
-						recipe_ingredient = ingredient.toLowerCase();
+						recipe_ingredient = ingredient;
 					}
 				});
 
-				ingredients.push({
-					ingredient: recipe_ingredient,
-					priority: i,
-					amount: ingredientAmount,
-					measurement: ingredientMeasurement
-				});
+				let ingredientExists = ingredients.find(ingredient => ingredient.ingredient === recipe_ingredient);
+
+				if(typeof ingredientExists === 'object') {
+					let index = ingredients.indexOf(ingredientExists); 
+					ingredients[index].amount = Number(ingredients[index].amount) + Number(ingredientAmount);
+				} else {
+					ingredients.push({
+						ingredient: recipe_ingredient,
+						priority: i,
+						amount: ingredientAmount,
+						measurement: ingredientMeasurement
+					});
+				}
 			});
 		});
 		return ingredients;
