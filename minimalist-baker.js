@@ -3,7 +3,7 @@ let cheerio = require('cheerio');
 let moment = require('moment');
 let fs = require('fs');
 
-let entryPoint = 'https://minimalistbaker.com/recipe-index';
+let entryPoint = 'https://minimalistbaker.com/recipes';
 
 const ingredientsCollection = require('./data/ingredients');
 const measurements = require('./data/measurements');
@@ -110,24 +110,26 @@ var minimalistBaker = {
 			const html = cheerio.load(response.data); 
 
 			var recipe = {
-				url: url
+				external_url: url
 			};
 
-			recipe.title = this.extractTitle(html);
+			recipe.name = this.extractTitle(html);
 
 			recipe.image = this.extractImage(html);
 
 			recipe.ingredients = this.extractIngredients(html);
 			
-			recipe.prepTime = this.extractPrepTime(html);
+			recipe.prep_time = this.extractPrepTime(html);
 
-			recipe.cookingTime = this.extractCookingTime(recipe.prepTime, html);
+			recipe.cooking_time = this.extractCookingTime(recipe.prepTime, html);
 
 			recipe.tags = this.extractTags(html);
 
 			recipe.servings = this.extractServings(html);
 
 			recipe.difficulty = 'easy';
+
+			recipe.author = 'Minimalist Baker';
 
 			this.recipesCollection.push(recipe);
 
@@ -140,21 +142,29 @@ var minimalistBaker = {
 	    await callback(array[index], index, array)
 	  }
 	},
-	async selectCategory (html) {
+	async selectCategory (html, page = 2) {
         const $ = cheerio.load(html); 
         var that = this;
 
-        await that.asyncForEach($('.featured-recipes'), async (elem) => {
-        	let recipes = $(elem).find('article');
-        	let count = 0;
-        	await that.asyncForEach(recipes, async (elem) => {
-        		if(count < 1) {
-				  	let url = $(elem).find('a').attr('href');
-		    		await that.resolveRecipe(url);
-		    	}
-	        	count++;
-			});
-        });
+    	let recipes = $('.content').find('article');
+
+    	await this.asyncForEach(recipes, async (elem) => {
+			let url = $(elem).find('a').attr('href');
+	    	await that.resolveRecipe(url);
+		});
+
+        if(page < 5) {
+	        await axios.get(entryPoint + '/page/' + page)
+			    .then((response) => {
+			        if(response.status === 200) {
+			        	const html = response.data;
+				    }
+			    }, (error) => console.log(err) );
+
+			if(html) {
+				await this.selectCategory(html, page + 1);
+			}
+        }
 	},
 	init () {
 		var that = this;
