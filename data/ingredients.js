@@ -365,7 +365,7 @@ const ingredientsCollection = [
 	'Chapati Flour',
 	'Nigella Seeds',
 	'Mustard Oil',
-	'Baby Leeks',
+	'Baby Leek',
 	'Grapefruit',
 	'Granola',
 	'Strawberry',
@@ -378,12 +378,20 @@ const ingredientsCollection = [
 	'Bitters',
 	'Tapioca Starch',
 	'Medjool Dates',
+	'Dates',
 	'Zucchini',
 	'Curry Powder',
 	'Kimchi',
-	'Coconut Cream',
 	'Coconut Yoghurt',
-	'Habanero Peppers'
+	'Habanero Peppers',
+	'Coconut Whipped Cream',
+	'Cabbage',
+	'Plaintain',
+	'Vegetable Broth',
+	'Coconut',
+	'Pesto',
+	'Kombu',
+	'Stevia'
 ];
 
 module.exports = ingredientsCollection;
