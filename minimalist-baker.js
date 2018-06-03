@@ -144,7 +144,6 @@ var minimalistBaker = {
 	},
 	async selectCategory (html, page = 2) {
         const $ = cheerio.load(html); 
-        let $ = cheerio.load(html); 
         var that = this;
 
     	let recipes = $('.content').find('article');
@@ -159,7 +158,6 @@ var minimalistBaker = {
 			    .then((response) => {
 			        if(response.status === 200) {
 			        	const html = response.data;
-			        	html = response.data;
 				    }
 			    }, (error) => console.log(err) );
 
