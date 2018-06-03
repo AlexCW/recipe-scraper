@@ -158,12 +158,11 @@ var minimalistBaker = {
 			    .then((response) => {
 			        if(response.status === 200) {
 			        	const html = response.data;
+			        	if(html) {
+							that.selectCategory(html, page + 1);
+						}
 				    }
 			    }, (error) => console.log(err) );
-
-			if(html) {
-				await this.selectCategory(html, page + 1);
-			}
         }
 	},
 	init () {
