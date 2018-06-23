@@ -15,10 +15,10 @@ var minimalistBaker = {
 		return title;
 	},
 	extractIngredients ($) {
-		let ingredient_container = $('.entry-content').find('.ERSIngredients');
+		let ingredient_container = $('.entry-content').find('.wprm-recipe-ingredient-group');
 		let ingredients = [];
 		$(ingredient_container).each(function(i, container) {
-			$(container).find('.ingredient').each(function(i, ingredient) {
+			$(container).find('.wprm-recipe-ingredient').each(function(i, ingredient) {
 				var recipe_ingredient = $(ingredient).html().replace(/\-/g, " ").toLowerCase();
 
 				let ingredientMeasurement = 'total';
@@ -65,7 +65,8 @@ var minimalistBaker = {
 	},
 	extractImage($) {
 		let ingredient_image = $('.entry-content').find('img');
-		return ingredient_image.attr('src');
+
+		return ingredient_image.attr('data-lazy-src');
 	},
 	extractMinutesFromText(text) {
 		let mappedTime = text.split(" ").map(function(e, a) {
@@ -79,23 +80,23 @@ var minimalistBaker = {
 		return Number(moment.duration(...mappedTime).asMinutes());
 	},
 	extractPrepTime ($) {
-		let prepTime = $('.ERSTimeItem', '.ERSTimes').find(`[itemprop='prepTime']`).text();
+		let prepTime = $('.wprm-recipe-prep_time').text() + ' ' + $('.wprm-recipe-prep_time-unit').text();
 		return this.extractMinutesFromText(prepTime);
 	},
 	extractCookingTime (prepTime, $) {
-		let totalTime = $('.ERSTimeItem', '.ERSTimes').find(`[itemprop='totalTime']`).text();
-		totalTime = this.extractMinutesFromText(totalTime);
-		return totalTime - prepTime;
+		let cookingTime = $('.wprm-recipe-cook_time').text() + ' ' + $('.wprm-recipe-cook_time-unit').text();
+		return this.extractMinutesFromText(cookingTime);
 	},
 	extractTags ($) {
-		let tagsContainer = $('.divERSHeadItems');
-		let typeTags = tagsContainer.find('.ERSCategory').find(`[itemprop='recipeCategory']`).text();
-		let cuisineTags = tagsContainer.find('.ERSCuisine').find(`[itemprop='recipeCuisine']`).text();
-		return Array.prototype.concat(typeTags.split(", "), cuisineTags.split(", "));
+		let tagsContainer = $('.entry-footer');
+		let tags = tagsContainer.find('.entry-categories').find('a').map(function(){ 
+		    return $(this).text(); 
+		}).get();
+		return tags;
 	},
 	extractServings ($) {
-		let tagsContainer = $('.divERSHeadItems');
-		let servings = tagsContainer.find('.ERSServes').find(`[itemprop='recipeYield']`).text();
+		let servingsContainer = $('.wprm-recipe-details-container');
+		let servings = servingsContainer.find('.wprm-recipe-servings').text();
 		return Number(servings.replace(/\D/g,''));
 	},
 	async resolveRecipe (url) {
@@ -153,7 +154,7 @@ var minimalistBaker = {
 	    	await that.resolveRecipe(url);
 		});
 
-        if(page < 5) {
+        if(page < 2) {
 	        await axios.get(entryPoint + '/page/' + page)
 			    .then((response) => {
 			        if(response.status === 200) {
