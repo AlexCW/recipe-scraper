@@ -18,8 +18,8 @@ var minimalistBaker = {
 		let ingredient_container = $('.entry-content').find('.wprm-recipe-ingredient-group');
 		let ingredients = [];
 		$(ingredient_container).each(function(i, container) {
-			$(container).find('.wprm-recipe-ingredient').each(function(i, ingredient) {
-				var recipe_ingredient = $(ingredient).html().replace(/\-/g, " ").toLowerCase();
+			$(container).find('span.wprm-recipe-ingredient-name').each(function(i, ingredient) {
+				var recipe_ingredient = $(ingredient).text().trim().replace(/\-/g, " ").toLowerCase();
 
 				let ingredientMeasurement = 'total';
 
