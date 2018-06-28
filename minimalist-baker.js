@@ -8,7 +8,7 @@ let entryPoint = 'https://minimalistbaker.com/recipes';
 const ingredientsCollection = require('./data/ingredients');
 const measurements = require('./data/measurements');
 
-var minimalistBaker = {
+let minimalistBaker = {
 	recipesCollection : [],
 	extractTitle ($) {
 		let title = $('.entry-title', '.entry-header').text();
@@ -17,55 +17,51 @@ var minimalistBaker = {
 	extractIngredients ($) {
 		let ingredient_container = $('.entry-content').find('.wprm-recipe-ingredient-group');
 		let ingredients = [];
-		$(ingredient_container).each(function(i, container) {
-			$(container).find('span.wprm-recipe-ingredient-name').each(function(i, ingredient) {
-				var recipe_ingredient = $(ingredient).text().trim().replace(/\-/g, " ").toLowerCase();
+		let priority = $('span.wprm-recipe-ingredient-name').length - 1;
+		$('.wprm-recipe-ingredient').each(function(i, ingredient) {
+			let recipe_ingredient = $(ingredient).find('.wprm-recipe-ingredient-name').text().trim().replace(/\-/g, " ").toLowerCase();
+			let ingredientMeasurement = 'total';
 
-				let ingredientMeasurement = 'total';
-
-				let ingredientAmount = 1;
-
-				measurements.forEach(function(measurement) {
-					let match = recipe_ingredient.match(measurement.pattern);
-					if(match) {
-						ingredientMeasurement = measurement.name;
-						
-						matchedIngredient = match.join("").match(/\d+/);
-
-						if(matchedIngredient) {
-							ingredientAmount = matchedIngredient[0];
-						}
-
-						return;
-					}
-				});
-
-				ingredientsCollection.forEach(function(ingredient) {
-					if(recipe_ingredient.indexOf(ingredient.toLowerCase()) > -1) {
-						recipe_ingredient = ingredient;
-					}
-				});
-
-				let ingredientExists = ingredients.find(ingredient => ingredient.ingredient === recipe_ingredient);
-
-				if(typeof ingredientExists === 'object') {
-					let index = ingredients.indexOf(ingredientExists); 
-					ingredients[index].amount = Number(ingredients[index].amount) + Number(ingredientAmount);
-				} else {
-					ingredients.push({
-						ingredient: recipe_ingredient,
-						priority: i,
-						amount: ingredientAmount,
-						measurement: ingredientMeasurement
-					});
+			measurements.forEach(function(measurement) {
+				let match = $(ingredient).find('.wprm-recipe-ingredient-unit').text().toLowerCase().match(measurement.pattern);
+				if(match) {
+					ingredientMeasurement = measurement.name;
+					return;
 				}
 			});
+
+			ingredientsCollection.forEach(function(ingredient) {
+				if(recipe_ingredient.indexOf(ingredient.toLowerCase()) > -1) {
+					recipe_ingredient = ingredient;
+				}
+			});
+
+			let ingredientExists = ingredients.find(ingredient => ingredient.ingredient === recipe_ingredient);
+
+			let amount = $(ingredient).find('.wprm-recipe-ingredient-amount').text();
+
+			if(typeof ingredientExists === 'object') {
+				let index = ingredients.indexOf(ingredientExists); 
+				ingredients[index].amount = Number(ingredients[index].amount) + Number(amount);
+			} else {
+				if(amount.indexOf("/") > -1) {
+					let fraction = amount.split('/');
+					amount = parseInt(fraction[0], 10) / parseInt(fraction[1], 10);
+				}
+				ingredients.push({
+					ingredient: recipe_ingredient,
+					priority: priority,
+					amount: !isNaN(amount) ? parseFloat(amount) : 1,
+					measurement: ingredientMeasurement
+				});
+			}
+
+			priority--;
 		});
 		return ingredients;
 	},
 	extractImage($) {
-		let ingredient_image = $('.entry-content').find('img');
-
+		let ingredient_image = $('.wprm-recipe-image').find('img');
 		return ingredient_image.attr('data-lazy-src');
 	},
 	extractMinutesFromText(text) {
@@ -110,7 +106,7 @@ var minimalistBaker = {
 
 			const html = cheerio.load(response.data); 
 
-			var recipe = {
+			let recipe = {
 				external_url: url
 			};
 
@@ -145,7 +141,7 @@ var minimalistBaker = {
 	},
 	async selectCategory (html, page = 2) {
         const $ = cheerio.load(html); 
-        var that = this;
+        let that = this;
 
     	let recipes = $('.content').find('article');
 
@@ -167,7 +163,7 @@ var minimalistBaker = {
         }
 	},
 	init () {
-		var that = this;
+		let that = this;
 		axios.get(entryPoint)
 		    .then((response) => {
 		        if(response.status === 200) {
