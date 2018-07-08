@@ -1,29 +1,22 @@
-let axios = require('axios');
-let cheerio = require('cheerio');
-let moment = require('moment');
-let fs = require('fs');
+const measurements = require('../../data/measurements');
+const moment = require('moment');
 
-let entryPoint = 'https://minimalistbaker.com/recipes';
-const base = require('./base');
-const measurements = require('./data/measurements');
-
-let minimalistBaker = {
-	ingredientsCollection: [],
-	recipesCollection : [],
+let extract = {
 	extractTitle ($) {
 		let title = $('.entry-title', '.entry-header').text();
 		return title;
 	},
-	extractIngredients ($) {
+	extractIngredients ($, ingedientsCollection) {
 		let ingredient_container = $('.entry-content').find('.wprm-recipe-ingredient-group');
 		let ingredients = [];
 		let priority = $('span.wprm-recipe-ingredient-name').length - 1;
-		let self = this;
-		$('.wprm-recipe-ingredient').each(function(i, ingredient) {
+		let ingredientsCollection = ingedientsCollection;
+		
+		$('.wprm-recipe-ingredient').each((i, ingredient) => {
 			let recipe_ingredient = $(ingredient).find('.wprm-recipe-ingredient-name').text().trim().replace(/\-/g, " ").toLowerCase();
 			let ingredientMeasurement = 'total';
 
-			measurements.forEach(function(measurement) {
+			measurements.forEach((measurement) => {
 				let match = $(ingredient).find('.wprm-recipe-ingredient-unit').text().toLowerCase().match(measurement.pattern);
 				if(match) {
 					ingredientMeasurement = measurement.name;
@@ -31,7 +24,7 @@ let minimalistBaker = {
 				}
 			});
 
-			self.ingredientsCollection.forEach(function(ingredient) {
+			ingredientsCollection.forEach((ingredient) => {
 				if(recipe_ingredient.indexOf(ingredient.toLowerCase()) > -1) {
 					recipe_ingredient = ingredient;
 				}
@@ -96,90 +89,6 @@ let minimalistBaker = {
 		let servings = servingsContainer.find('.wprm-recipe-servings').text();
 		return Number(servings.replace(/\D/g,''));
 	},
-	async resolveRecipe (url) {
-
-		const timeout = ms => new Promise(res => setTimeout(res, ms));
-
-		// await timeout(5000);
-
-		try {
-			const response = await axios.get(url);
-
-			const html = cheerio.load(response.data); 
-
-			let recipe = {
-				external_url: url
-			};
-
-			recipe.name = this.extractTitle(html);
-
-			recipe.image = this.extractImage(html);
-
-			recipe.ingredients = this.extractIngredients(html);
-			
-			recipe.prep_time = this.extractPrepTime(html);
-
-			recipe.cooking_time = this.extractCookingTime(recipe.prepTime, html);
-
-			recipe.tags = this.extractTags(html);
-
-			recipe.servings = this.extractServings(html);
-
-			recipe.difficulty = 'easy';
-
-			recipe.author = 'Minimalist Baker';
-
-			this.recipesCollection.push(recipe);
-
-		} catch (err) {
-			console.log(err)
-		}
-	},
-	async asyncForEach(array, callback) {
-	  for (let index = 0; index < array.length; index++) {
-	    await callback(array[index], index, array)
-	  }
-	},
-	async selectCategory (html, page = 2) {
-        const $ = cheerio.load(html); 
-        let that = this;
-
-    	let recipes = $('.content').find('article');
-
-    	await this.asyncForEach(recipes, async (elem) => {
-			let url = $(elem).find('a').attr('href');
-	    	await that.resolveRecipe(url);
-		});
-
-        if(page < 5) {
-	        await axios.get(entryPoint + '/page/' + page)
-			    .then((response) => {
-			        if(response.status === 200) {
-			        	const html = response.data;
-			        	if(html) {
-							that.selectCategory(html, page + 1);
-						}
-				    }
-			    }, (error) => console.log(err) );
-        }
-	},
-	async init () {
-		let that = this;
-		base.getIngredients().then((ingredients) => {
-			this.ingredientsCollection = ingredients;
-			axios.get(entryPoint)
-			    .then((response) => {
-			        if(response.status === 200) {
-			        	const html = response.data;
-				        this.selectCategory(html).then(function(){
-				        	 fs.writeFile('data/minimalist-baker.json', 
-						        JSON.stringify(that.recipesCollection, null, 4), (err)=>{
-						     })
-				        });
-			    	}
-			    }, (error) => console.log(err) );
-		});
-	}
 }
 
-minimalistBaker.init();
+module.exports = extract
