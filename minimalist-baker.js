@@ -4,11 +4,11 @@ let moment = require('moment');
 let fs = require('fs');
 
 let entryPoint = 'https://minimalistbaker.com/recipes';
-
-const ingredientsCollection = require('./data/ingredients');
+const base = require('./base');
 const measurements = require('./data/measurements');
 
 let minimalistBaker = {
+	ingredientsCollection: [],
 	recipesCollection : [],
 	extractTitle ($) {
 		let title = $('.entry-title', '.entry-header').text();
@@ -18,6 +18,7 @@ let minimalistBaker = {
 		let ingredient_container = $('.entry-content').find('.wprm-recipe-ingredient-group');
 		let ingredients = [];
 		let priority = $('span.wprm-recipe-ingredient-name').length - 1;
+		let self = this;
 		$('.wprm-recipe-ingredient').each(function(i, ingredient) {
 			let recipe_ingredient = $(ingredient).find('.wprm-recipe-ingredient-name').text().trim().replace(/\-/g, " ").toLowerCase();
 			let ingredientMeasurement = 'total';
@@ -30,7 +31,7 @@ let minimalistBaker = {
 				}
 			});
 
-			ingredientsCollection.forEach(function(ingredient) {
+			self.ingredientsCollection.forEach(function(ingredient) {
 				if(recipe_ingredient.indexOf(ingredient.toLowerCase()) > -1) {
 					recipe_ingredient = ingredient;
 				}
@@ -150,7 +151,7 @@ let minimalistBaker = {
 	    	await that.resolveRecipe(url);
 		});
 
-        if(page < 2) {
+        if(page < 5) {
 	        await axios.get(entryPoint + '/page/' + page)
 			    .then((response) => {
 			        if(response.status === 200) {
@@ -162,19 +163,22 @@ let minimalistBaker = {
 			    }, (error) => console.log(err) );
         }
 	},
-	init () {
+	async init () {
 		let that = this;
-		axios.get(entryPoint)
-		    .then((response) => {
-		        if(response.status === 200) {
-		        	const html = response.data;
-			        this.selectCategory(html).then(function(){
-			        	 fs.writeFile('data/minimalist-baker.json', 
-					        JSON.stringify(that.recipesCollection, null, 4), (err)=>{
-					     })
-			        });
-		    	}
-		    }, (error) => console.log(err) );
+		base.getIngredients().then((ingredients) => {
+			this.ingredientsCollection = ingredients;
+			axios.get(entryPoint)
+			    .then((response) => {
+			        if(response.status === 200) {
+			        	const html = response.data;
+				        this.selectCategory(html).then(function(){
+				        	 fs.writeFile('data/minimalist-baker.json', 
+						        JSON.stringify(that.recipesCollection, null, 4), (err)=>{
+						     })
+				        });
+			    	}
+			    }, (error) => console.log(err) );
+		});
 	}
 }
 
