@@ -20,27 +20,7 @@ let minimalistBaker = {
 
 			const html = cheerio.load(response.data); 
 
-			let recipe = {
-				external_url: url
-			};
-
-			recipe.name = extract.extractTitle(html);
-
-			recipe.image = extract.extractImage(html);
-
-			recipe.ingredients = extract.extractIngredients(html, this.ingredientsCollection);
-			
-			recipe.prep_time = extract.extractPrepTime(html);
-
-			recipe.cooking_time = extract.extractCookingTime(recipe.prepTime, html);
-
-			recipe.tags = extract.extractTags(html);
-
-			recipe.servings = extract.extractServings(html);
-
-			recipe.difficulty = 'easy';
-
-			recipe.author = 'Minimalist Baker';
+			let recipe = base.buildRecipe(extract, url, html, this.ingredientsCollection);
 
 			this.recipesCollection.push(recipe);
 
@@ -85,7 +65,7 @@ let minimalistBaker = {
 			        if(response.status === 200) {
 			        	const html = response.data;
 				        this.selectCategory(html).then(function(){
-				        	 fs.writeFile('../../data/minimalist-baker.json', 
+				        	 fs.writeFile('./minimalist-baker.json', 
 						        JSON.stringify(that.recipesCollection, null, 4), (err)=>{
 						     })
 				        });
