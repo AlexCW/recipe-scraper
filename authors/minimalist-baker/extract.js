@@ -6,27 +6,28 @@ let extract = {
 		let title = $('.entry-title', '.entry-header').text()
 		return title
 	},
-	extractIngredients ($, ingedientsCollection) {
+	extractIngredients ($, ingredientsCollection, matcher) {
 		let ingredient_container = $('.entry-content').find('.wprm-recipe-ingredient-group')
 		let ingredients = []
+		let missingIngredients = [];
 		let priority = $('span.wprm-recipe-ingredient-name').length - 1
-		let ingredientsCollection = ingedientsCollection
 
 		$('.wprm-recipe-ingredient').each((i, ingredient) => {
 			let recipe_ingredient = $(ingredient).find('.wprm-recipe-ingredient-name').text().trim().replace(/\-/g, " ").toLowerCase()
 			let ingredientMeasurement = this.extractMeasurement($, ingredient)
 
-			ingredientsCollection.forEach((ingredient) => {
-				if(recipe_ingredient.indexOf(ingredient.toLowerCase()) > -1) {
-					recipe_ingredient = ingredient
-				}
-			})
+			match = matcher(ingredientsCollection, recipe_ingredient)
 
-			let ingredientExists = ingredients.find(ingredient => ingredient.ingredient === recipe_ingredient)
+			if (!match) {
+				missingIngredients.push(recipe_ingredient)
+				return
+			}
 
+			let ingredientExists = ingredients.find(ingredient => ingredient.ingredient === match)
 			let amount = $(ingredient).find('.wprm-recipe-ingredient-amount').text()
 
-			if(typeof ingredientExists === 'object') {
+			// if the ingredient is in the recipe twice
+			if(typeof ingredientExists !== 'undefined') {
 				let index = ingredients.indexOf(ingredientExists)
 				ingredients[index].amount = Number(ingredients[index].amount) + Number(amount)
 			} else {
@@ -35,7 +36,7 @@ let extract = {
 					amount = parseInt(fraction[0], 10) / parseInt(fraction[1], 10)
 				}
 				ingredients.push({
-					ingredient: recipe_ingredient,
+					ingredient: match,
 					priority: priority,
 					amount: !isNaN(amount) ? parseFloat(amount) : 1,
 					measurement: ingredientMeasurement
@@ -45,7 +46,7 @@ let extract = {
 			priority--
 		})
 
-		return ingredients
+		return { 'matched': ingredients, 'missing': missingIngredients }
 	},
 	extractMeasurement($, ingredient) {
 		let ingredientMeasurement = 'total'
@@ -61,8 +62,7 @@ let extract = {
 		return ingredientMeasurement
 	},
 	extractImage($) {
-		let ingredient_image = $('.wprm-recipe-image').find('img')
-		return ingredient_image.attr('data-lazy-src')
+		return $('.wprm-recipe-image').find('img').attr('data-lazy-src')
 	},
 	extractMinutesFromText(text) {
 		let mappedTime = text.split(" ").map(function(e, a) {

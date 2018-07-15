@@ -4,11 +4,12 @@ let fs = require('fs');
 
 let entryPoint = 'https://minimalistbaker.com/recipes';
 const base = require('../../base');
-const extract = require('./extract')
+const extract = require('./extract');
 
 let minimalistBaker = {
 	ingredientsCollection: [],
 	recipesCollection : [],
+	missingIngredients : [],
 	async resolveRecipe (url) {
 
 		const timeout = ms => new Promise(res => setTimeout(res, ms));
@@ -16,13 +17,17 @@ let minimalistBaker = {
 		// await timeout(5000);
 
 		try {
-			const response = await axios.get(url);
+			const response = await axios.get(url)
 
-			const html = cheerio.load(response.data); 
+			const html = cheerio.load(response.data)
 
-			let recipe = base.buildRecipe(extract, url, html, this.ingredientsCollection);
+			let recipe = base.buildRecipe(extract, url, html, this.ingredientsCollection)
 
-			this.recipesCollection.push(recipe);
+			if (recipe.missingIngredients.length <= 0) {
+				this.recipesCollection.push(recipe)
+			} else {
+				this.missingIngredients = this.missingIngredients.concat(recipe.missingIngredients)
+			}
 
 		} catch (err) {
 			console.log(err)
@@ -65,8 +70,11 @@ let minimalistBaker = {
 			        if(response.status === 200) {
 			        	const html = response.data;
 				        this.selectCategory(html).then(function(){
-				        	 fs.writeFile('./minimalist-baker.json', 
+				        	 fs.writeFile('./recipes.json', 
 						        JSON.stringify(that.recipesCollection, null, 4), (err)=>{
+						     })
+						     fs.writeFile('./missing-ingredients.json', 
+						        JSON.stringify(base.removeDuplicates(that.missingIngredients), null, 4), (err)=>{
 						     })
 				        });
 			    	}

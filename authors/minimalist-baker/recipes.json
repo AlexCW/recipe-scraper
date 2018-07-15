@@ -1,0 +1,279 @@
+[
+    {
+        "external_url": "https://minimalistbaker.com/30-minute-quinoa-fried-rice/",
+        "name": "30-Minute Quinoa “Fried Rice”",
+        "ingredients": [
+            {
+                "ingredient": "Quinoa",
+                "priority": 12,
+                "amount": 3,
+                "measurement": "cups"
+            },
+            {
+                "ingredient": "Coconut",
+                "priority": 11,
+                "amount": 7,
+                "measurement": "tbsp"
+            },
+            {
+                "ingredient": "Maple Syrup",
+                "priority": 10,
+                "amount": 1,
+                "measurement": "tbsp"
+            },
+            {
+                "ingredient": "Butter",
+                "priority": 9,
+                "amount": 1,
+                "measurement": "tbsp"
+            },
+            {
+                "ingredient": "Lime",
+                "priority": 8,
+                "amount": 2,
+                "measurement": "tbsp"
+            },
+            {
+                "ingredient": "Garlic",
+                "priority": 7,
+                "amount": 2,
+                "measurement": "tsp"
+            },
+            {
+                "ingredient": "Onion",
+                "priority": 6,
+                "amount": 1.25,
+                "measurement": "cups"
+            },
+            {
+                "ingredient": "Sesame Oil",
+                "priority": 5,
+                "amount": 1,
+                "measurement": "tbsp"
+            },
+            {
+                "ingredient": "Carrot",
+                "priority": 4,
+                "amount": 1,
+                "measurement": "cups"
+            },
+            {
+                "ingredient": "Broccoli",
+                "priority": 1,
+                "amount": 0.5,
+                "measurement": "cups"
+            },
+            {
+                "ingredient": "Cashews",
+                "priority": 0,
+                "amount": 0.5,
+                "measurement": "cups"
+            }
+        ],
+        "missingIngredients": [],
+        "prep_time": 5,
+        "tags": [
+            "10 ingredients or less",
+            "30 minutes or less",
+            "Asian-Inspired",
+            "Dairy-Free",
+            "Dinner",
+            "Entree",
+            "Fall",
+            "Gluten Free",
+            "No Bake",
+            "Oil-Free",
+            "Recipes",
+            "Refined Sugar-Free",
+            "Savory",
+            "Sides",
+            "Soy-Free",
+            "Spring",
+            "Summer",
+            "Vegan",
+            "Winter"
+        ],
+        "servings": 0,
+        "difficulty": "easy",
+        "author": "Minimalist Baker",
+        "cooking_time": 12
+    },
+    {
+        "external_url": "https://minimalistbaker.com/vibrant-mango-salad-with-peanut-dressing/",
+        "name": "Vibrant Mango Salad with Peanut Dressing",
+        "ingredients": [
+            {
+                "ingredient": "Butter",
+                "priority": 13,
+                "amount": 1,
+                "measurement": "total"
+            },
+            {
+                "ingredient": "Carrot",
+                "priority": 12,
+                "amount": 0.5,
+                "measurement": "cups"
+            },
+            {
+                "ingredient": "Red Cabbage",
+                "priority": 11,
+                "amount": 0.25,
+                "measurement": "cups"
+            },
+            {
+                "ingredient": "Mango",
+                "priority": 10,
+                "amount": 1,
+                "measurement": "g"
+            },
+            {
+                "ingredient": "Cilantro",
+                "priority": 9,
+                "amount": 0.5,
+                "measurement": "cups"
+            },
+            {
+                "ingredient": "Salt",
+                "priority": 8,
+                "amount": 0.3333333333333333,
+                "measurement": "cups"
+            },
+            {
+                "ingredient": "Lime",
+                "priority": 7,
+                "amount": 1,
+                "measurement": "tbsp"
+            },
+            {
+                "ingredient": "Maple Syrup",
+                "priority": 6,
+                "amount": 0.5,
+                "measurement": "tbsp"
+            },
+            {
+                "ingredient": "Garlic",
+                "priority": 5,
+                "amount": 1,
+                "measurement": "tsp"
+            },
+            {
+                "ingredient": "Coconut",
+                "priority": 4,
+                "amount": 3,
+                "measurement": "tbsp"
+            },
+            {
+                "ingredient": "Water",
+                "priority": 3,
+                "amount": null,
+                "measurement": "total"
+            },
+            {
+                "ingredient": "Lemon",
+                "priority": 0,
+                "amount": null,
+                "measurement": "total"
+            }
+        ],
+        "missingIngredients": [],
+        "prep_time": 15,
+        "tags": [
+            "10 ingredients or less",
+            "30 minutes or less",
+            "Appetizer",
+            "Asian-Inspired",
+            "Dairy-Free",
+            "Dinner",
+            "Entree",
+            "Fall",
+            "Gluten Free",
+            "Grain-Free",
+            "Lunch",
+            "No Bake",
+            "Oil-Free",
+            "Recipes",
+            "Refined Sugar-Free",
+            "Salad",
+            "Savory",
+            "Sides",
+            "Soy-Free",
+            "Spring",
+            "Summer",
+            "Thai-Inspired",
+            "Vegan",
+            "Winter"
+        ],
+        "servings": 0,
+        "difficulty": "easy",
+        "author": "Minimalist Baker",
+        "cooking_time": 0
+    },
+    {
+        "external_url": "https://minimalistbaker.com/no-bake-vanilla-cake-bites/",
+        "name": "No-Bake Vanilla Cake Bites",
+        "ingredients": [
+            {
+                "ingredient": "Dates",
+                "priority": 6,
+                "amount": 0.25,
+                "measurement": "cups"
+            },
+            {
+                "ingredient": "Walnut",
+                "priority": 5,
+                "amount": 0.25,
+                "measurement": "cups"
+            },
+            {
+                "ingredient": "Almond Flour",
+                "priority": 4,
+                "amount": 1,
+                "measurement": "cups"
+            },
+            {
+                "ingredient": "Coconut",
+                "priority": 3,
+                "amount": 0.3333333333333333,
+                "measurement": "cups"
+            },
+            {
+                "ingredient": "Salt",
+                "priority": 2,
+                "amount": null,
+                "measurement": "pinch"
+            },
+            {
+                "ingredient": "Vanilla Extract",
+                "priority": 1,
+                "amount": 2,
+                "measurement": "tsp"
+            }
+        ],
+        "missingIngredients": [],
+        "prep_time": 10,
+        "tags": [
+            "15 minutes or less",
+            "7 ingredients or less",
+            "Dairy-Free",
+            "Fall",
+            "Gluten Free",
+            "Grain-Free",
+            "No Bake",
+            "Oil-Free",
+            "One Bowl",
+            "Recipes",
+            "Refined Sugar-Free",
+            "Snacks",
+            "Soy-Free",
+            "Spring",
+            "Summer",
+            "Sweet (dessert)",
+            "Vegan",
+            "Winter"
+        ],
+        "servings": 0,
+        "difficulty": "easy",
+        "author": "Minimalist Baker",
+        "cooking_time": 0
+    }
+]
