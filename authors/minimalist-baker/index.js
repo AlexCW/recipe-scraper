@@ -1,8 +1,9 @@
 let axios = require('axios');
 let cheerio = require('cheerio');
-let fs = require('fs');
 
 let entryPoint = 'https://minimalistbaker.com/recipes';
+
+const api = require('../../api');
 const base = require('../../base');
 const extract = require('./extract');
 
@@ -12,7 +13,7 @@ let minimalistBaker = {
 	    await callback(array[index], index, array)
 	  }
 	},
-	async selectCategory (html, page = 1) {
+	async loadRecipePage (html, page = 1, ingredients) {
         const $ = cheerio.load(html); 
         let that = this;
 
@@ -20,7 +21,7 @@ let minimalistBaker = {
 
     	await this.asyncForEach(recipes, async (elem) => {
 			let url = $(elem).find('a').attr('href');
-	    	await base.resolveRecipe(url, extract);
+	    	await base.resolveRecipe(url, extract, ingredients);
 		});
 
         if(page < 3) {
@@ -29,35 +30,34 @@ let minimalistBaker = {
 			        if(response.status === 200) {
 			        	const html = response.data;
 			        	if(html) {
-							await that.selectCategory(html, page + 1);
+							await that.loadRecipePage(html, page + 1, ingredients);
 						}
 				    }
 			    }, (error) => console.log(err) );
         }
 	},
 	async init () {
-		let that = this;
-		await base.fetchIngredients();
+		let that = this
+		let ingredients = []
+		let html = ''
+
+		try {
+			ingredients = await api.fetchIngredients()
+		} catch(error) {
+			console.error(error)
+			return
+		}
+
+		try {
+			html = await base.getEntryPageHtml(entryPoint)
+		} catch(error) {
+			console.error(error)
+			return
+		}
+
+		await this.loadRecipePage(html, 1, ingredients)
 		
-		axios.get(entryPoint)
-		    .then((response) => {
-		        if(response.status === 200) {
-		        	const html = response.data;
-			        this.selectCategory(html).then(function(){
-					     return new Promise(function(resolve, reject) {
-				        	 fs.writeFile('./recipes.json', 
-						        JSON.stringify(base.recipes, null, 4), (err)=>{
-						        if (err) reject(err);
-						     })
-						     fs.writeFile('./missing-ingredients.json', 
-						        JSON.stringify(base.removeDuplicates(base.missingIngredients), null, 4), (err)=>{
-						        if (err) reject(err);
-						     })
-					     	 resolve()
-			        	});
-					})
-		    	}
-		    }, (error) => console.log(err) );
+		base.writeToFiles();
 	}
 }
 

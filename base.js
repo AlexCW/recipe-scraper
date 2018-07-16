@@ -1,11 +1,19 @@
 let axios = require('axios');
 let cheerio = require('cheerio');
+let fs = require('fs');
 
 let base = {
 	ingredients: [],
 	recipes: [],
 	missingIngredients: [],
-	async resolveRecipe (url, extract) {
+	async getEntryPageHtml(url) {
+		let response = await axios.get(url)
+        if(response.status === 200) {
+        	return response.data;
+    	}
+		throw "Unable to retrieve the HTML for the entry page."
+	},
+	async resolveRecipe (url, extract, ingredients) {
 
 		// const timeout = ms => new Promise(res => setTimeout(res, ms));
 
@@ -16,7 +24,7 @@ let base = {
 
 			const html = cheerio.load(response.data)
 
-			let recipe = base.buildRecipe(extract, url, html, base.ingredients)
+			let recipe = base.buildRecipe(extract, url, html, ingredients)
 
 			if (recipe.missingIngredients.length <= 0) {
 				base.recipes.push(recipe)
@@ -48,12 +56,6 @@ let base = {
 
 		return recipe;
 	},
-	async fetchIngredients () {
-		let response = await axios.get('http://api.eataway.co.uk/ingredients');
-		this.ingredients = response.data.data.map((ingredient) => {
-			return ingredient.attributes.name
-		})
-	},
 	matchIngredient (ingredientsCollection, recipeIngredient) {
 		return ingredientsCollection.find((ingredient) => {
 			if(recipeIngredient.indexOf(ingredient.toLowerCase()) > -1) {
@@ -65,6 +67,20 @@ let base = {
 	},
 	removeDuplicates (data) {
 		return [...new Set(data)]
+	},
+	writeToFiles () {
+		const that = this
+		return new Promise(function(resolve, reject) {
+        	 fs.writeFile('./recipes.json', 
+		        JSON.stringify(that.recipes, null, 4), (err)=>{
+		        if (err) reject(err);
+		     })
+		     fs.writeFile('./missing-ingredients.json', 
+		        JSON.stringify(that.removeDuplicates(that.missingIngredients), null, 4), (err)=>{
+		        if (err) reject(err);
+		     })
+	     	 resolve()
+    	});
 	}
 }
 
