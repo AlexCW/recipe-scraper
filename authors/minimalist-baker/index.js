@@ -38,7 +38,7 @@ let minimalistBaker = {
 	    await callback(array[index], index, array)
 	  }
 	},
-	async selectCategory (html, page = 2) {
+	async selectCategory (html, page = 1) {
         const $ = cheerio.load(html); 
         let that = this;
 
@@ -49,13 +49,13 @@ let minimalistBaker = {
 	    	await that.resolveRecipe(url);
 		});
 
-        if(page < 5) {
+        if(page < 3) {
 	        await axios.get(entryPoint + '/page/' + page)
-			    .then((response) => {
+			    .then(async (response) => {
 			        if(response.status === 200) {
 			        	const html = response.data;
 			        	if(html) {
-							that.selectCategory(html, page + 1);
+							await that.selectCategory(html, page + 1);
 						}
 				    }
 			    }, (error) => console.log(err) );
@@ -70,13 +70,18 @@ let minimalistBaker = {
 			        if(response.status === 200) {
 			        	const html = response.data;
 				        this.selectCategory(html).then(function(){
-				        	 fs.writeFile('./recipes.json', 
-						        JSON.stringify(that.recipesCollection, null, 4), (err)=>{
-						     })
-						     fs.writeFile('./missing-ingredients.json', 
-						        JSON.stringify(base.removeDuplicates(that.missingIngredients), null, 4), (err)=>{
-						     })
-				        });
+						     return new Promise(function(resolve, reject) {
+					        	 fs.writeFile('./recipes.json', 
+							        JSON.stringify(that.recipesCollection, null, 4), (err)=>{
+							        if (err) reject(err);
+							     })
+							     fs.writeFile('./missing-ingredients.json', 
+							        JSON.stringify(base.removeDuplicates(that.missingIngredients), null, 4), (err)=>{
+							        if (err) reject(err);
+							     })
+						     	 resolve()
+				        	});
+						})
 			    	}
 			    }, (error) => console.log(err) );
 		});

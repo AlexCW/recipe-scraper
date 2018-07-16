@@ -13,7 +13,7 @@ let extract = {
 		let priority = $('span.wprm-recipe-ingredient-name').length - 1
 
 		$('.wprm-recipe-ingredient').each((i, ingredient) => {
-			let recipe_ingredient = $(ingredient).find('.wprm-recipe-ingredient-name').text().trim().replace(/\-/g, " ").toLowerCase()
+			let recipe_ingredient = $(ingredient).find('.wprm-recipe-ingredient-name').text().trim().replace('*', '').replace(/\-/g, " ").toLowerCase()
 			let ingredientMeasurement = this.extractMeasurement($, ingredient)
 
 			match = matcher(ingredientsCollection, recipe_ingredient)
