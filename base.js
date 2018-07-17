@@ -69,17 +69,15 @@ let base = {
 		return [...new Set(data)]
 	},
 	writeToFiles () {
-		const that = this
-		return new Promise(function(resolve, reject) {
+		return new Promise((resolve, reject) => {
         	 fs.writeFile('./recipes.json', 
-		        JSON.stringify(that.recipes, null, 4), (err)=>{
-		        if (err) reject(err);
+		        JSON.stringify(this.recipes, null, 4), (err)=>{
+		        if (err) reject('There was an error writing the recipes to file.'); return;
 		     })
 		     fs.writeFile('./missing-ingredients.json', 
-		        JSON.stringify(that.removeDuplicates(that.missingIngredients), null, 4), (err)=>{
-		        if (err) reject(err);
+		        JSON.stringify(this.removeDuplicates(this.missingIngredients), null, 4), (err)=>{
+		        if (err) reject('There was an error writing the missing ingredients to file.'); return;
 		     })
-	     	 resolve()
     	});
 	}
 }

@@ -57,7 +57,9 @@ let minimalistBaker = {
 
 		await this.loadRecipePage(html, 1, ingredients)
 		
-		base.writeToFiles();
+		base.writeToFiles().catch((error) => {
+			console.error(error);
+		})
 	}
 }
 
