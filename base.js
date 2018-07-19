@@ -1,6 +1,7 @@
 let axios = require('axios');
 let cheerio = require('cheerio');
 let fs = require('fs');
+let stringSimilarity = require('string-similarity');
 
 let base = {
 	ingredients: [],
@@ -57,13 +58,13 @@ let base = {
 		return recipe;
 	},
 	matchIngredient (ingredientsCollection, recipeIngredient) {
-		return ingredientsCollection.find((ingredient) => {
-			if(recipeIngredient.indexOf(ingredient.toLowerCase()) > -1) {
-				return ingredient
-			}
+		let bestMatch = stringSimilarity.findBestMatch(recipeIngredient, ingredientsCollection).bestMatch;
 
-			return false;
-		})
+		if (bestMatch.rating < 0.5) {
+			return false
+		}
+
+		return stringSimilarity.findBestMatch(recipeIngredient, ingredientsCollection).bestMatch.target	
 	},
 	removeDuplicates (data) {
 		return [...new Set(data)]
